@@ -1,15 +1,13 @@
-@page {
-    size: 182mm 128mm landscape;
-}
-
 body {
     margin: 0;
     padding: 0;
     font-size: 18pt;
     font-family: "UD デジタル 教科書体 NP-R";
+    counter-reset: page-count;
 }
 
 .header {
+    font-family: "BIZ UDゴシック";
     margin: 0 0 3em 0;
     padding: 0.5em;
     border-bottom: 0.5pt solid #ccc;
@@ -21,11 +19,15 @@ body {
 }
 
 .card-front {
-    page-break-after: always;   
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 
 .card-back {
-    page-break-after: always;   
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 
 .item-set {
