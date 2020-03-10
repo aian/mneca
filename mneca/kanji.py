@@ -6,22 +6,99 @@
 
 import re
 
+class CardStyle:
+
+    ##
+    ## Normal Style
+    ##
+
+    NORMAL_STYLE = """
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 18pt;
+    font-family: "UD デジタル 教科書体 NP-R";
+}
+.header {
+    margin: 0;
+    padding: 0.5em;
+    border-bottom: 0.5pt solid #ccc;
+    font-size: 12pt;
+}
+.title {
+    width: 90%;
+    float: left;
+}
+.page {
+    text-align: right;
+}
+.page:after {
+    content: counter(page-count);
+}
+.card {
+    counter-increment: page-count;
+}
+.card-front {
+    page-break-after: always;   
+}
+.card-back {
+    page-break-after: always;   
+}
+.item-set {
+    padding: 1em 2em 0em 8em;
+    counter-reset: item-number;
+}
+.item {
+    margin: 0 0 1em 0;
+    text-indent: -6em;
+    line-height: 150%;
+    counter-increment: item-number;
+}
+.item:before {
+    font-family: "BIZ UDゴシック";
+    vertical-align: middle;
+    content: '□□□　(' counter(item-number, cjk-ideographic) ')　';
+}
+.card-front .q {
+    border-bottom: 0.5pt solid #000;
+}
+.card-back .q {
+    color: #F00;
+}
+"""
+    
+    ##
+    ## Print Style
+    ##
+
+    PRINT_STYLE = """
+@page {
+    size: 182mm 128mm landscape;
+}
+"""
+
+#------------------------------------------------------------------------------#
+
 class CardItem:
     def __init__(self):
         self.label = ""
         self.kana = ""
         self.kanj = ""
 
+#------------------------------------------------------------------------------#
+
 class KanjiCard:
 
     def __init__(self):
-        self.LABEL_PAT = '([^:]+):([^:]+)'
-        self.RUBY_PAT  = '\(([^{|}]+)\|([^{|}]+)\)'
-        self.RUBY_REP  = '<ruby><rb>\\1</rb><rt>\\2</rt></ruby>'
+        self.COMMENT_PAT = '^\s*#'
+        self.BLANK_PAT   = '^\s*$'
+        self.LABEL_PAT   = '([^:]+):([^:]+)'
+        self.RUBY_PAT    = '\(([^{|}]+)\|([^{|}]+)\)'
+        self.RUBY_REP    = '<ruby><rb>\\1</rb><rt>\\2</rt></ruby>'
 
-        self.KANJ_PAT  = '{([^{|}]+)\|([^{|}]+)}'
-        self.KANJ_REP  = '<span class="q">\\1</span>'
-        self.KANA_REP  = '<span class="q">\\2</span>'
+        self.KANJ_PAT    = '{([^{|}]+)\|([^{|}]+)}'
+        self.KANJ_REP    = '<span class="q">\\1</span>'
+        self.KANA_REP    = '<span class="q">\\2</span>'
         
         self.item_count_per_page = 10
 
@@ -29,6 +106,12 @@ class KanjiCard:
         item = CardItem()
         text = ''
         ruby_text = ''
+
+        # comment line
+        c = re.match(self.COMMENT_PAT, line)
+        b = re.match(self.BLANK_PAT, line)
+        if not(c is None) or not(b is None):
+            return None
 
         # label
         m = re.match(self.LABEL_PAT, line)
@@ -122,9 +205,9 @@ class KanjiCard:
     def write_html(self, fp = None, item_set = []):
         fp.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         fp.write('<html>\n')
-        fp.write('<head>')
-        fp.write('<link rel="stylesheet" href="print.css" media="print"/>\n')
-        fp.write('<link rel="stylesheet" href="style.css"/>\n')
+        fp.write('<head>\n')
+        fp.write('<style>' + CardStyle.NORMAL_STYLE + '</style>\n')
+        fp.write('<style media="print">' + CardStyle.PRINT_STYLE + '</style>\n')
         fp.write('<title>小学3年生の漢字</title>\n')
         fp.write('</head>\n')
         fp.write('<body>\n')
@@ -150,6 +233,6 @@ class KanjiCard:
             
     def make(self, in_file = '', out_file = 'card.html'):
         #item_set = self.extract(in_file)
-        item_set = self.extract('sample\\vocab.txt')
+        item_set = self.extract('sample\\g3.txt')
 
         self.print_card('sample\\bar.html', item_set)
