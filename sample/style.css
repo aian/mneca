@@ -3,15 +3,26 @@ body {
     padding: 0;
     font-size: 18pt;
     font-family: "UD デジタル 教科書体 NP-R";
-    counter-reset: page-count;
 }
 
 .header {
-    font-family: "BIZ UDゴシック";
-    margin: 0 0 3em 0;
+    margin: 0;
     padding: 0.5em;
     border-bottom: 0.5pt solid #ccc;
     font-size: 12pt;
+}
+
+.title {
+    width: 90%;
+    float: left;
+}
+
+.page {
+    text-align: right;
+}
+
+.page:after {
+    content: counter(page-count);
 }
 
 .card {
@@ -19,19 +30,15 @@ body {
 }
 
 .card-front {
-    margin: 0;
-    padding: 0;
-    border: 0;
+    page-break-after: always;   
 }
 
 .card-back {
-    margin: 0;
-    padding: 0;
-    border: 0;
+    page-break-after: always;   
 }
 
 .item-set {
-    padding: 1em 2em 1em 6em;
+    padding: 1em 2em 0em 8em;
     counter-reset: item-number;
 }
 
@@ -45,7 +52,7 @@ body {
 .item:before {
     font-family: "BIZ UDゴシック";
     vertical-align: middle;
-    content: '□□□　(' counter(item-number) ')　';
+    content: '□□□　(' counter(item-number, cjk-ideographic) ')　';
 }
 
 .card-front .q {
@@ -54,17 +61,4 @@ body {
 
 .card-back .q {
     color: #F00;
-}
-
-.footer {
-    font-family: "BIZ UDゴシック";
-    margin: 4em 0 0 0;
-    padding: 0.5em;
-    border-top: 0.5pt solid #ccc;
-    font-size: 12pt;
-    text-align: right;
-}
-
-.page:after {
-    content: counter(page-count);
 }
