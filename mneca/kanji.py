@@ -101,6 +101,8 @@ class KanjiCard:
         self.KANA_REP    = '<span class="q">\\2</span>'
         
         self.item_count_per_page = 10
+        self.output = 'out.html'
+        self.source = None
 
     def parse_item_line(self, line = ""):
         item = CardItem()
@@ -130,10 +132,13 @@ class KanjiCard:
 
         return item
 
-    def extract(self, path = ""):
+    def extract(self):
+        if self.source is None:
+            raise(Exception("source file is empty"))
+
         item_set = []
 
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(self.source, 'r', encoding='utf-8') as f:
             for line in f.readlines():
                 line.strip()
                 item = self.parse_item_line(line)
@@ -223,16 +228,16 @@ class KanjiCard:
     ##
     ##
     
-    def print_card(self, path = "", item_set = []):
-        with open(path, "w", encoding='utf-8') as f:
+    def print_card(self, item_set = []):
+        if self.output is None:
+            raise(Exception("output file is empty"))
+
+        with open(self.output, "w", encoding='utf-8') as f:
             self.write_html(f, item_set)
 
     ##
     ## Interface
     ##
             
-    def make(self, in_file = '', out_file = 'card.html'):
-        #item_set = self.extract(in_file)
-        item_set = self.extract('sample\\g3.txt')
-
-        self.print_card('sample\\bar.html', item_set)
+    def make(self):
+        self.print_card(self.extract())
