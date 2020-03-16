@@ -4,6 +4,7 @@
 ## Make Kanji Cards
 ##
 
+import sys
 import re
 
 class CardStyle:
@@ -241,3 +242,79 @@ class KanjiCard:
             
     def make(self):
         self.print_card(self.extract())
+
+#------------------------------------------------------------------------------#
+
+class WordItem:
+    def __init__(self, line_number, line):
+        self.line_number = line_number
+        self.line = line
+
+class DupCheck:
+
+    def __init__(self):
+        self.word_stat = {}
+        self.KANJ_PAT = r'[{]([^{|}]+)\|([^{|}]+)[}]'
+
+    def add_word_stat(self, line = '', line_number = 0):
+        lst = re.findall(self.KANJ_PAT, line)
+        if len(lst) <= 0:
+            print('Ignored: %05d: %s' % (line_number, line))
+        else:
+            for m in lst:
+                w = WordItem(line_number, line)
+                if m[0] in self.word_stat:
+                    self.word_stat[m[0]].append(w)
+                else:
+                    self.word_stat[m[0]] = [w]
+
+    def print_word_stat(self):
+        total = 0
+        dup = 0
+        for w in self.word_stat:
+            lst = self.word_stat[w]
+            
+            if len(lst) > 1:
+                print('%s: ---- DUPRICATED' % w)
+                dup += 1
+            else:
+                # print("%s: " % w)
+                pass
+
+            if len(lst) > 1:
+                for item in lst:
+                    total += 1
+                    print("    %05d: %s" % (item.line_number, item.line))
+
+        print('------------------------------------------------------------')
+        print('%d example(s) are registered for each word' % total)
+        print('%d word(s) are stored' % len(self.word_stat))
+        print('%d word(s) are duplicated.' % dup)
+    
+    def read_list(self, fp = None):
+        num = 0
+        line = fp.readline()
+        while line:
+            num += 1
+            line = line.strip()
+            self.add_word_stat(line, num)
+            line = fp.readline()
+        
+    def check(self, path = ''):
+        print('Check the file: %s' % path)
+        with open(path, 'r', encoding='utf-8') as f:
+            self.read_list(f)
+        
+        self.print_word_stat()
+        
+#------------------------------------------------------------------------------#
+
+def dup_check(path = ''):
+    dc = DupCheck()
+    dc.check(path)
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        dup_check(sys.argv[1])
+    else:
+        print('usage: %s <path>', sys.argv[0])
