@@ -26,7 +26,21 @@
 *.a
 *.lib
 
+# Compiled resources
+*.bml
+
 # Executables
 *.exe
 *.out
 *.app
+
+# Visual Studio intermediate files
+.vs
+*.user
+
+# Project intermediate files
+.build
+
+# Exceptional files
+!sqlite3.dll
+!sqlite3.lib

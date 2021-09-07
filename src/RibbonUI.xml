@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+- To build this file on Visual Studio 2019:
+-
+-   (1) Add this file (RibbonUI.xml) into the project.
+-   (2) Show RibbonUI.xml [Propaties] by right-clicking.
+-   (3) [構成プロパティ][全般][項目の種類]を"カスタムビルドツール"にする
+-   (4) [カスタムビルドツール]の項目が現れるので、ここでこのファイル
+-       をコンパイルするコマンド(uicc.exe)を登録する
+-
+- @see https://docs.microsoft.com/en-us/windows/win32/windowsribbon/-uiplat-windowsribbon-entry
+- @see https://www.codeproject.com/Articles/119319/Windows-Ribbon-Framework-in-Win32-C-Application
+-->
+<Application xmlns="http://schemas.microsoft.com/windows/2009/Ribbon">
+  <Application.Commands>
+    <Command Name="cmdFileMenu" LabelTitle="ファイル" />
+
+    <Command Name="cmdHomeTab" LabelTitle="ホーム" Id="0xD100" Symbol="ID_RIBBON_TAB_HOME"/>
+    <Command Name="cmdGroup1" LabelTitle="Group1" />
+
+    <Command Name="cmdTrainTab" LabelTitle="トレーニング" Id="0xD101" Symbol="ID_RIBBON_TAB_TRAIN"/>
+
+    <Command Name="cmdDataTab" LabelTitle="データ" Id="0xD102" Symbol="ID_RIBBON_TAB_DATA"/>
+
+    
+    <Command Name="cmdQAT" LabelTitle="QAT" />
+
+    <Command Name="cmdNew" Id="0xE100" Symbol="ID_CMD_NEW" LabelTitle="新規作成" Keytip="N">
+      <Command.TooltipTitle>新規作成 (Ctrl+N)</Command.TooltipTitle>
+      <Command.TooltipDescription>新しい単語帳を作成します。</Command.TooltipDescription>
+      <Command.LargeImages>
+        <Image Source="res/NewFile-32.png" Id="100" Symbol="ID_NEW_LARGE_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/NewFile-40.png" Id="101" Symbol="ID_NEW_LARGE_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/NewFile-48.png" Id="102" Symbol="ID_NEW_LARGE_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/NewFile-64.png" Id="103" Symbol="ID_NEW_LARGE_IMAGE_4" MinDPI="192"/>
+      </Command.LargeImages>
+      <Command.SmallImages>
+        <Image Source="res/NewFile-16.png" Id="104" Symbol="ID_NEW_SMALL_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/NewFile-20.png" Id="105" Symbol="ID_NEW_SMALL_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/NewFile-24.png" Id="106" Symbol="ID_NEW_SMALL_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/NewFile-32.png" Id="107" Symbol="ID_NEW_SMALL_IMAGE_4" MinDPI="192"/>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="cmdOpen" Id="0xE101" Symbol="ID_CMD_OPEN" LabelTitle="開く" Keytip="O">
+      <Command.TooltipTitle>開く (Ctrl+O)</Command.TooltipTitle>
+      <Command.TooltipDescription>既存の単語帳ファイルを開きます。</Command.TooltipDescription>
+      <Command.LargeImages>
+        <Image Source="res/OpenFile-32.png" Id="110" Symbol="ID_OPEN_LARGE_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/OpenFile-40.png" Id="111" Symbol="ID_OPEN_LARGE_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/OpenFile-48.png" Id="112" Symbol="ID_OPEN_LARGE_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/OpenFile-64.png" Id="113" Symbol="ID_OPEN_LARGE_IMAGE_4" MinDPI="192"/>
+      </Command.LargeImages>
+      <Command.SmallImages>
+        <Image Source="res/OpenFile-16.png" Id="114" Symbol="ID_OPEN_SMALL_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/OpenFile-20.png" Id="115" Symbol="ID_OPEN_SMALL_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/OpenFile-24.png" Id="116" Symbol="ID_OPEN_SMALL_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/OpenFile-32.png" Id="117" Symbol="ID_OPEN_SMALL_IMAGE_4" MinDPI="192"/>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="cmdSave" Id="0xE102" Symbol="ID_CMD_SAVE" LabelTitle="保存" Keytip="S">
+      <Command.TooltipTitle>保存 (Ctrl+S)</Command.TooltipTitle>
+      <Command.TooltipDescription>単語帳をファイルに保存します。</Command.TooltipDescription>
+      <Command.LargeImages>
+        <Image Source="res/Save-32.png" Id="120" Symbol="ID_SAVE_LARGE_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/Save-40.png" Id="121" Symbol="ID_SAVE_LARGE_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/Save-48.png" Id="122" Symbol="ID_SAVE_LARGE_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/Save-64.png" Id="123" Symbol="ID_SAVE_LARGE_IMAGE_4" MinDPI="192"/>
+      </Command.LargeImages>
+      <Command.SmallImages>
+        <Image Source="res/Save-16.png" Id="124" Symbol="ID_SAVE_SMALL_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/Save-20.png" Id="125" Symbol="ID_SAVE_SMALL_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/Save-24.png" Id="126" Symbol="ID_SAVE_SMALL_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/Save-32.png" Id="127" Symbol="ID_SAVE_SMALL_IMAGE_4" MinDPI="192"/>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="cmdSaveAs" Id="0xE103" Symbol="ID_CMD_SAVE_AS" LabelTitle="名前を付けて保存" Keytip="A">
+      <Command.TooltipTitle>名前を付けて保存 (Ctrl+A)</Command.TooltipTitle>
+      <Command.TooltipDescription>名前を付けて単語帳をファイルに保存します。</Command.TooltipDescription>
+      <Command.LargeImages>
+        <Image Source="res/SaveAs-32.png" Id="130" Symbol="ID_SAVE_AS_LARGE_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/SaveAs-40.png" Id="131" Symbol="ID_SAVE_AS_LARGE_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/SaveAs-48.png" Id="132" Symbol="ID_SAVE_AS_LARGE_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/SaveAs-64.png" Id="133" Symbol="ID_SAVE_AS_LARGE_IMAGE_4" MinDPI="192"/>
+      </Command.LargeImages>
+      <Command.SmallImages>
+        <Image Source="res/SaveAs-16.png" Id="134" Symbol="ID_SAVE_AS_SMALL_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/SaveAs-20.png" Id="135" Symbol="ID_SAVE_AS_SMALL_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/SaveAs-24.png" Id="136" Symbol="ID_SAVE_AS_SMALL_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/SaveAs-32.png" Id="137" Symbol="ID_SAVE_AS_SMALL_IMAGE_4" MinDPI="192"/>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="cmdExit" Id="0xE104" Symbol="ID_CMD_EXIT" LabelTitle="終了" Keytip="Q">
+      <Command.TooltipTitle>終了 (Ctrl+Q)</Command.TooltipTitle>
+      <Command.TooltipDescription>mnecaを終了します。</Command.TooltipDescription>
+      <Command.LargeImages>
+        <Image Source="res/Exit-32.png" Id="140" Symbol="ID_EXIT_LARGE_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/Exit-40.png" Id="141" Symbol="ID_EXIT_LARGE_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/Exit-48.png" Id="142" Symbol="ID_EXIT_LARGE_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/Exit-64.png" Id="143" Symbol="ID_EXIT_LARGE_IMAGE_4" MinDPI="192"/>
+      </Command.LargeImages>
+      <Command.SmallImages>
+        <Image Source="res/Exit-16.png" Id="144" Symbol="ID_EXIT_SMALL_IMAGE_1" MinDPI="96"/>
+        <Image Source="res/Exit-20.png" Id="145" Symbol="ID_EXIT_SMALL_IMAGE_2" MinDPI="120"/>
+        <Image Source="res/Exit-24.png" Id="146" Symbol="ID_EXIT_SMALL_IMAGE_3" MinDPI="144"/>
+        <Image Source="res/Exit-32.png" Id="147" Symbol="ID_EXIT_SMALL_IMAGE_4" MinDPI="192"/>
+      </Command.SmallImages>
+    </Command>
+  </Application.Commands>
+  <Application.Views>
+    <Ribbon>
+      <Ribbon.ApplicationMenu>
+        <ApplicationMenu CommandName="cmdFileMenu">
+          <MenuGroup Class="MajorItems">
+            <Button CommandName="cmdNew"/>
+            <Button CommandName="cmdOpen"/>
+            <Button CommandName="cmdSave"/>
+            <Button CommandName="cmdSaveAs"/>
+            <Button CommandName="cmdExit"/>
+          </MenuGroup>
+        </ApplicationMenu>
+      </Ribbon.ApplicationMenu>
+      <Ribbon.Tabs>
+        <Tab CommandName="cmdHomeTab">
+        </Tab>
+        <Tab CommandName="cmdTrainTab">
+        </Tab>
+        <Tab CommandName="cmdDataTab">
+        </Tab>
+      </Ribbon.Tabs>
+      <Ribbon.QuickAccessToolbar>
+        <QuickAccessToolbar CommandName="cmdQAT" />
+      </Ribbon.QuickAccessToolbar>
+    </Ribbon>
+  </Application.Views>
+</Application>

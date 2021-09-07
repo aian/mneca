@@ -1,0 +1,22 @@
+##
+## EditorConfig is awesome: https://EditorConfig.org
+##
+
+root = true
+
+##
+## Common settings
+##
+ 
+[*]
+end_of_line = crlf
+insert_final_newline = true
+
+##
+## C/C++
+##
+
+[*.{c,cpp,cxx,h,hpp,hxx}]
+charset = utf-8
+indent_style = space
+indent_size = 2

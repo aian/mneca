@@ -1,0 +1,169 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "Resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041104b0"
+        BEGIN
+            VALUE "CompanyName", "qune"
+            VALUE "FileDescription", "A tool for memorizing English words"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "mneca.exe"
+            VALUE "LegalCopyright", "Copyright (C) 2021"
+            VALUE "OriginalFilename", "mneca.exe"
+            VALUE "ProductName", "mneca"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x411, 1200
+    END
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+1                       RT_MANIFEST             "mneca.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// UIFILE
+//
+
+#include "RibbonUI.rc"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_LEMMA DIALOGEX 0, 0, 283, 340
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Lemma"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,171,319,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,226,319,50,14
+    EDITTEXT        IDC_LEMMA_EDIT_LEMMA,7,16,249,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LEMMA_EDIT_PRONOUNCIATION,7,42,102,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_LEMMA_TAB_ATTRIBUTES,"SysTabControl32",0x0,15,157,252,146
+    LTEXT           "&Lemma:",IDC_STATIC,7,7,26,8
+    LTEXT           "&Pronounciation:",IDC_STATIC,7,33,54,8
+    LISTBOX         IDC_LEMMA_LIST_DEFINITIONS,15,91,251,63,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "&Definitions:",IDC_STATIC,7,61,269,251
+    EDITTEXT        IDC_LEMMA_EDIT_DEFINITION,55,75,159,13,ES_AUTOHSCROLL
+    COMBOBOX        IDC_LEMMA_COMBO_POS,15,75,38,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "N",IDC_LEMMA_BUTTON_NEW_DEFINITION,217,73,15,14,BS_ICON
+    PUSHBUTTON      "U",IDC_LEMMA_BUTTON_UPDATE_DEFINITION,235,74,15,14,BS_ICON
+    PUSHBUTTON      "D",IDC_LEMMA_BUTTON_DELETE,251,74,15,14,BS_ICON
+    PUSHBUTTON      "A",IDC_LEMMA_BUTTON_AUTO_INPUT,259,16,15,14,BS_ICON
+    LTEXT           "&Level:",IDC_STATIC,126,33,20,8
+    CONTROL         "",IDC_LEMMA_SPIN_LEVEL,"msctls_updown32",UDS_ARROWKEYS,143,42,11,14
+    EDITTEXT        IDC_LEMMA_EDIT_LEVEL,126,42,17,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOG_LEMMA, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 276
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 333
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DIALOG_LEMMA AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
