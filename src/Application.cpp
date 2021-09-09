@@ -80,8 +80,11 @@ AppWindow::Impl::Impl(Window* parent) : Window(IDR_APPWINDOW, parent) {
   {
     this->AddChild(new StatusBar(this));
     this->AddChild(new Ribbon(this));
-    this->AddChild(new ListWindow(this));
+//  this->AddChild(new ListWindow(this));
+    this->AddChild(new Splitter(
+      IDR_SPLITTER_HORIZONTAL, Splitter::Direction::HORIZONTAL, this));
   }
+#if 0
   {
     ListWindow* pListWnd;
     ListItem lstItem;
@@ -106,6 +109,7 @@ AppWindow::Impl::Impl(Window* parent) : Window(IDR_APPWINDOW, parent) {
 
     pListWnd->AddItem(lstItem);
   }
+#endif
   {
     ::ShowWindow(this->GetWindowHandle(), param->GetWindowState());
   }

@@ -17,6 +17,12 @@ public:
   Rect& operator=(Rect&& rhs) noexcept;
   explicit operator RECT() const noexcept;
 public:
+  VOID Set(INT nPosX1, INT nPosY1, INT nPosX2, INT nPosY2) noexcept;
+  VOID SetPosX1(INT nPos) noexcept;
+  VOID SetPosY1(INT nPos) noexcept;
+  VOID SetPosX2(INT nPos) noexcept;
+  VOID SetPosY2(INT nPos) noexcept;
+public:
   INT GetWidth() const noexcept;
   INT GetHeight() const noexcept;
   INT GetPosX1() const noexcept;
