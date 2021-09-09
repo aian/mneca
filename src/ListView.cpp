@@ -255,32 +255,6 @@ ListWindow::ListWindow(Window* pParentWnd) : Window(IDR_LISTVIEW, pParentWnd) {
 
 ListWindow::~ListWindow() { }
 
-#if 0
-VOID
-ListWindow::UpdateOffset() {
-  Widget* pParentWnd = this->GetParent();
-  Widget* pRibbonWnd = nullptr;
-  Widget* pStatusBarWnd = nullptr;
-  RECT rcOffset = { 0 };
-
-  pRibbonWnd = pParentWnd->GetChild(IDR_RIBBON);
-  if (!pRibbonWnd) {
-    throw std::runtime_error("Failed to get the Ribbon window");
-  }
-  pStatusBarWnd = pParentWnd->GetChild(IDR_STATUS_BAR);
-  if(!pStatusBarWnd) {
-    throw std::runtime_error("Failed to get the StatusBar window");
-  }
-
-  rcOffset.top    = pRibbonWnd->GetHeight();
-  rcOffset.right  = 0;
-  rcOffset.bottom = pStatusBarWnd->GetHeight();
-  rcOffset.left   = 0;
-
-  this->SetOffset(rcOffset);
-}
-#endif
-
 BOOL
 ListWindow::AddItem(const ListItem& item) {
   LVITEM lvItem = { 0 };

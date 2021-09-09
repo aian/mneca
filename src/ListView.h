@@ -87,8 +87,6 @@ public:
   BOOL InsertColumn();
   BOOL AdjustColumn();
   BOOL UpdateColumn();
-protected:
-//  VOID UpdateOffset() override;
 public:
   BOOL AddItem(const ListItem& item);
 private:

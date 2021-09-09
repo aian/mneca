@@ -49,6 +49,8 @@ public:
 public:
   Pane& operator=(const Pane& rhs) = delete;
   Pane& operator=(Pane&& rhs) noexcept = delete;
+private:
+  VOID OnSize(INT nWidth, INT nHeight);
 protected:
   LRESULT WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 };

@@ -154,6 +154,8 @@ Splitter::OnSize(INT nWidth, INT nHeight) {
         rcChild[i].GetWidth(), rcChild[i].GetHeight(),
         FALSE);
       ::InvalidateRect(m_pPaneWnd[i]->GetWindowHandle(), &rc, TRUE);
+
+      m_pPaneWnd[i]->WndProc(WM_SIZE, 0, MAKELPARAM(rcChild[i].GetWidth(), rcChild[i].GetHeight()));
     }
   }
 }
@@ -195,7 +197,6 @@ Splitter::OnMouseMove(INT nPosX, INT nPosY, UINT fKeyFlags) {
       ::SetCursor(hCursor);
 
       this->m_nPos = nPosX;
-
       this->OnSize(nWidth, nHeight);
     }
   } else {
@@ -295,10 +296,16 @@ Pane::Pane(Window* pParentWnd) : Window(IDR_PANE, pParentWnd) {
 
 Pane::~Pane() {}
 
+VOID
+Pane::OnSize(INT nWidth, INT nHeight) {
+  int a = 0;
+}
+
 LRESULT
 Pane::WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
   switch (uMsg) {
   case WM_SIZE:
+    this->OnSize(HIWORD(lParam), LOWORD(lParam));
     break;
   default:
     break;
