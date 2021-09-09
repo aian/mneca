@@ -11,31 +11,37 @@ Splitter::Splitter(INT nID, Direction fDir, Window* pParentWnd)
     m_bGrab(FALSE),
     m_pPaneWnd{ nullptr, nullptr }
 {
-  HWND hWnd = nullptr;
+  {
+    HWND hWnd = nullptr;
 
-  static const DWORD dwStyle = WS_CHILD | WS_VISIBLE;
-  static const DWORD dwExStyle = 0;
+    static const DWORD dwStyle = WS_CHILD | WS_VISIBLE;
+    static const DWORD dwExStyle = 0;
 
-  hWnd = CreateWindowEx(
-    dwExStyle,
-    WC_STATIC,
-    0,
-    dwStyle,
-    0, 0, 0, 0,
-    pParentWnd->GetWindowHandle(),
-    reinterpret_cast<HMENU>(static_cast<UINT64>(nID)),
-    GetInstance(),
-    nullptr
-  );
-  if (!hWnd) {
-    DWORD dwError = GetLastError();
-    throw std::runtime_error("Failed to create a splitter window");
+    hWnd = CreateWindowEx(
+      dwExStyle,
+      WC_STATIC,
+      0,
+      dwStyle,
+      0, 0, 0, 0,
+      pParentWnd->GetWindowHandle(),
+      reinterpret_cast<HMENU>(static_cast<UINT64>(nID)),
+      GetInstance(),
+      nullptr
+    );
+    if (!hWnd) {
+      DWORD dwError = GetLastError();
+      throw std::runtime_error("Failed to create a splitter window");
+    }
+    this->SetWindowHandle(hWnd);
+    this->SetClientRect();
   }
-  this->SetWindowHandle(hWnd);
-  this->SetClientRect();
-
-  this->m_pPaneWnd[0] = new Pane(this);
-  this->m_pPaneWnd[1] = new Pane(this);
+  {
+    this->m_pPaneWnd[0] = new Pane(this);
+    this->m_pPaneWnd[1] = new Pane(this);
+  }
+  {
+    this->AddPane(new ListWindow(this->m_pPaneWnd[1]), 1);
+  }
 }
 
 Splitter::~Splitter() {
@@ -147,8 +153,7 @@ Splitter::OnSize(INT nWidth, INT nHeight) {
         rcChild[i].GetPosX1(), rcChild[i].GetPosY1(),
         rcChild[i].GetWidth(), rcChild[i].GetHeight(),
         FALSE);
-      ::InvalidateRect(
-        m_pPaneWnd[i]->GetWindowHandle(), &rc, TRUE);
+      ::InvalidateRect(m_pPaneWnd[i]->GetWindowHandle(), &rc, TRUE);
     }
   }
 }
@@ -179,7 +184,10 @@ Splitter::OnMouseMove(INT nPosX, INT nPosY, UINT fKeyFlags) {
       ::GetClientRect(this->GetWindowHandle(), &rcClient);
       nWidth = this->m_nBorderWidth;
       nHeight = rcClient.bottom - rcClient.top;
-      ::MoveWindow(this->GetWindowHandle(), nPosX, this->GetRect().GetPosY1(), nWidth, nHeight, FALSE);
+      ::MoveWindow(
+        this->GetWindowHandle(),
+        nPosX, this->GetRect().GetPosY1(),
+        nWidth, nHeight, FALSE);
 
       rcParent = static_cast<RECT>(pParent->GetRect());
       ::InvalidateRect(pParent->GetWindowHandle(), &rcParent, TRUE);
@@ -289,6 +297,12 @@ Pane::~Pane() {}
 
 LRESULT
 Pane::WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+  switch (uMsg) {
+  case WM_SIZE:
+    break;
+  default:
+    break;
+  }
   for (auto pChild : this->m_children) {
     pChild->WndProc(uMsg, wParam, lParam);
   }

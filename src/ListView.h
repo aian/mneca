@@ -88,7 +88,7 @@ public:
   BOOL AdjustColumn();
   BOOL UpdateColumn();
 protected:
-  VOID UpdateOffset() override;
+//  VOID UpdateOffset() override;
 public:
   BOOL AddItem(const ListItem& item);
 private:

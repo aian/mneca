@@ -255,6 +255,7 @@ ListWindow::ListWindow(Window* pParentWnd) : Window(IDR_LISTVIEW, pParentWnd) {
 
 ListWindow::~ListWindow() { }
 
+#if 0
 VOID
 ListWindow::UpdateOffset() {
   Widget* pParentWnd = this->GetParent();
@@ -278,6 +279,7 @@ ListWindow::UpdateOffset() {
 
   this->SetOffset(rcOffset);
 }
+#endif
 
 BOOL
 ListWindow::AddItem(const ListItem& item) {
@@ -320,27 +322,23 @@ ListWindow::OnEndTrack(NMHEADER* header) {
 
 VOID
 ListWindow::OnSize(UINT nWidth, UINT nHeight) {
-  RECT rcOffset = { 0 };
-  RECT rcWnd = { 0 };
-  UINT cx, cy, cw, ch;
+  Window* pParent = dynamic_cast<Window*>(this->GetParent());
 
-  this->SetClientRect();
-  this->UpdateOffset();
+  if (pParent) {
+    Rect rcParent = pParent->GetRect();
+    RECT rcWnd = static_cast<RECT>(rcParent);
 
-  rcOffset = this->GetOffset();
+    ::MoveWindow(
+      this->GetWindowHandle(),
+      rcParent.GetPosX1(), rcParent.GetPosY1(),
+      rcParent.GetWidth(), rcParent.GetHeight(),
+      FALSE);
 
-  cx = rcOffset.left;
-  cy = rcOffset.top;
-  cw = nWidth - (rcOffset.left + rcOffset.right);
-  ch = nHeight - (rcOffset.top + rcOffset.bottom);
+    this->AdjustColumn();
+    this->UpdateColumn();
 
-  ::MoveWindow(this->GetWindowHandle(), cx, cy, cw, ch, FALSE);
-
-  this->AdjustColumn();
-  this->UpdateColumn();
-
-  ::GetClientRect(this->GetWindowHandle(), &rcWnd);
-  ::InvalidateRect(this->GetWindowHandle(), &rcWnd, TRUE);
+    ::InvalidateRect(this->GetWindowHandle(), &rcWnd, TRUE);
+  }
 }
 
 BOOL
