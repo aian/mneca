@@ -29,6 +29,8 @@ protected:
 public:
   virtual RECT GetOffset() const noexcept;
   virtual VOID SetOffset(const RECT& rcOffset) noexcept;
+public:
+  LRESULT WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override = 0;
 protected:
   virtual VOID UpdateOffset();
 private:

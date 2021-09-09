@@ -32,6 +32,7 @@ public:
 protected:
   virtual INT GetID() const noexcept;
   LRESULT Dispatch(UINT nMsg, WPARAM wParam, LPARAM lParam);
+public:
   virtual LRESULT WndProc(UINT nMsg, WPARAM wParam, LPARAM lParam) = 0;
 public:
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT nMeg, WPARAM wParam, LPARAM lParam);
