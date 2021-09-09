@@ -34,9 +34,26 @@ Splitter::Splitter(INT nID, Direction fDir, Window* pParentWnd)
   this->SetWindowHandle(hWnd);
   this->SetClientRect();
 
+  this->m_pPaneWnd[0] = new Pane(this);
+  this->m_pPaneWnd[1] = new Pane(this);
 }
 
-Splitter::~Splitter() { }
+Splitter::~Splitter() {
+  for (auto pPane : this->m_pPaneWnd) {
+    if (pPane) {
+      delete pPane;
+    }
+  }
+}
+
+VOID
+Splitter::AddPane(Window* pWnd, SIZE_T index) {
+  if (index < 0 || index >= m_pPaneWnd.size()) {
+    assert(false);
+    return;
+  }
+  this->m_pPaneWnd[index]->AddChild(pWnd);
+}
 
 VOID
 Splitter::UpdateRect() {
@@ -75,28 +92,64 @@ Splitter::OnSize(INT nWidth, INT nHeight) {
 
   pParent = this->GetParent();
   if (pParent) {
+    std::array<Rect, 2> rcChild;
     Rect rcRect = this->GetRect();
-    RECT rcParent = {};
+    const Rect rcParent = static_cast<RECT>(pParent->GetRect());
 
     if (m_fDir == Splitter::Direction::HORIZONTAL) {
       rcWnd.SetPosX1(this->m_nPos);
       rcWnd.SetPosY1(rcRect.GetPosY1());
       rcWnd.SetPosX2(this->m_nPos + this->m_nBorderWidth);
       rcWnd.SetPosY2(rcRect.GetPosY2());
+
+      rcChild[0].SetPosX1(rcParent.GetPosX1());
+      rcChild[0].SetPosY1(rcWnd.GetPosY1());
+      rcChild[0].SetPosX2(this->m_nPos - 1);
+      rcChild[0].SetPosY2(rcWnd.GetPosY2());
+
+      rcChild[1].SetPosX1(this->m_nPos + this->m_nBorderWidth + 1);
+      rcChild[1].SetPosY1(rcWnd.GetPosY1());
+      rcChild[1].SetPosX2(rcParent.GetPosX2());
+      rcChild[1].SetPosY2(rcWnd.GetPosY2());
     } else {
       assert(m_fDir == Splitter::Direction::VERTICAL);
       rcWnd.SetPosX1(rcRect.GetPosY1());
       rcWnd.SetPosY1(this->m_nPos);
       rcWnd.SetPosX2(rcRect.GetPosY2());
       rcWnd.SetPosY2(this->m_nPos + this->m_nBorderWidth);
-    }
-    ::MoveWindow(
-      this->GetWindowHandle(),
-      rcWnd.GetPosX1(), rcWnd.GetPosY1(), rcWnd.GetWidth(), rcWnd.GetHeight(),
-      FALSE);
 
-    rcParent = static_cast<RECT>(pParent->GetRect());
-    ::InvalidateRect(this->GetWindowHandle(), &rcParent, TRUE);
+      rcChild[0].SetPosX1(rcWnd.GetPosX1());
+      rcChild[0].SetPosY1(rcWnd.GetPosY1());
+      rcChild[0].SetPosX2(rcWnd.GetPosX2());
+      rcChild[0].SetPosY2(this->m_nPos - 1);
+
+      rcChild[1].SetPosX1(rcWnd.GetPosX1());
+      rcChild[1].SetPosY1(this->m_nPos + this->m_nBorderWidth + 1);
+      rcChild[1].SetPosX2(rcWnd.GetPosX2());
+      rcChild[1].SetPosY2(rcWnd.GetPosY2());
+    }
+    {
+      const RECT rc = static_cast<RECT>(rcParent);
+
+      ::MoveWindow(
+        this->GetWindowHandle(),
+        rcWnd.GetPosX1(), rcWnd.GetPosY1(), rcWnd.GetWidth(), rcWnd.GetHeight(),
+        FALSE);
+      ::InvalidateRect(this->GetWindowHandle(), &rc, TRUE);
+    }
+
+    // Update child panes
+    for (SIZE_T i = 0; i < rcChild.size(); i++) {
+      const RECT rc = static_cast<RECT>(rcParent);
+
+      ::MoveWindow(
+        m_pPaneWnd[i]->GetWindowHandle(),
+        rcChild[i].GetPosX1(), rcChild[i].GetPosY1(),
+        rcChild[i].GetWidth(), rcChild[i].GetHeight(),
+        FALSE);
+      ::InvalidateRect(
+        m_pPaneWnd[i]->GetWindowHandle(), &rc, TRUE);
+    }
   }
 }
 
@@ -134,6 +187,8 @@ Splitter::OnMouseMove(INT nPosX, INT nPosY, UINT fKeyFlags) {
       ::SetCursor(hCursor);
 
       this->m_nPos = nPosX;
+
+      this->OnSize(nWidth, nHeight);
     }
   } else {
     RECT rcWnd = {};
@@ -195,8 +250,49 @@ Splitter::WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
   default:
     break;
   }
+  // Call the WndProc of each panes explicitly.
+  for (auto pPane : this->m_pPaneWnd) {
+    pPane->WndProc(uMsg, wParam, lParam);
+  }
+
   return static_cast<LRESULT>(0);
 }
 
+/* ------------------------------------------------------------------------- */
+
+Pane::Pane(Window* pParentWnd) : Window(IDR_PANE, pParentWnd) {
+  HWND hWnd = nullptr;
+
+  static const DWORD dwStyle = WS_CHILD | WS_VISIBLE;
+  static const DWORD dwExStyle = 0;
+
+  hWnd = CreateWindowEx(
+    dwExStyle,
+    WC_STATIC,
+    0,
+    dwStyle,
+    0, 0, 0, 0,
+    pParentWnd->GetWindowHandle(),
+    reinterpret_cast<HMENU>(static_cast<UINT64>(IDR_PANE)),
+    GetInstance(),
+    nullptr
+  );
+  if (!hWnd) {
+    DWORD dwError = GetLastError();
+    throw std::runtime_error("Failed to create a splitter window");
+  }
+  this->SetWindowHandle(hWnd);
+  this->SetClientRect();
+}
+
+Pane::~Pane() {}
+
+LRESULT
+Pane::WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+  for (auto pChild : this->m_children) {
+    pChild->WndProc(uMsg, wParam, lParam);
+  }
+  return static_cast<LRESULT>(0);
+}
 
 }

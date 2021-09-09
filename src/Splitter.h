@@ -17,9 +17,11 @@ public:
   Splitter(const Splitter& other) = delete;
   Splitter(Splitter&& other) noexcept = delete;
   virtual ~Splitter();
-private:
+public:
   Splitter& operator=(const Splitter& rhs) = delete;
   Splitter& operator=(Splitter&& rhs) noexcept = delete;
+public:
+  VOID AddPane(Window* pWnd, SIZE_T index);
 protected:
   LRESULT WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 private:
@@ -34,7 +36,21 @@ private:
   Direction m_fDir;
   BOOL m_bHover;
   BOOL m_bGrab;
-  std::array<Widget*, 2> m_pPaneWnd;
+  std::array<Window*, 2> m_pPaneWnd;
+};
+
+class Pane final : public Window {
+public:
+  Pane() = delete;
+  Pane(Window* pParentWnd);
+  Pane(const Pane& other) noexcept = delete;
+  Pane(Pane&& other) noexcept = delete;
+  virtual ~Pane();
+public:
+  Pane& operator=(const Pane& rhs) = delete;
+  Pane& operator=(Pane&& rhs) noexcept = delete;
+protected:
+  LRESULT WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 };
 
 }
