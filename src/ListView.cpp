@@ -296,23 +296,19 @@ ListWindow::OnEndTrack(NMHEADER* header) {
 
 VOID
 ListWindow::OnSize(UINT nWidth, UINT nHeight) {
-  Window* pParent = dynamic_cast<Window*>(this->GetParent());
+  Rect rcThis = this->GetRect();
+  RECT rc = static_cast<RECT>(rcThis);
 
-  if (pParent) {
-    Rect rcParent = pParent->GetRect();
-    RECT rcWnd = static_cast<RECT>(rcParent);
+  ::MoveWindow(
+    this->GetWindowHandle(),
+    rcThis.GetPosX1(), rcThis.GetPosY1(),
+    rcThis.GetWidth(), rcThis.GetHeight(),
+    FALSE);
 
-    ::MoveWindow(
-      this->GetWindowHandle(),
-      rcParent.GetPosX1(), rcParent.GetPosY1(),
-      rcParent.GetWidth(), rcParent.GetHeight(),
-      FALSE);
+  this->AdjustColumn();
+  this->UpdateColumn();
 
-    this->AdjustColumn();
-    this->UpdateColumn();
-
-    ::InvalidateRect(this->GetWindowHandle(), &rcWnd, TRUE);
-  }
+  ::InvalidateRect(this->GetWindowHandle(), &rc, TRUE);
 }
 
 BOOL
@@ -339,36 +335,34 @@ ListWindow::InsertColumn() {
 
 BOOL
 ListWindow::AdjustColumn() {
-  UINT variable_width = 0;
-  UINT variable_column_count = 0;
-  UINT fixed_column_size = 0;
+  UINT uVariableWidth = 0;
+  UINT uVariableColumnCount = 0;
+  UINT uFixedColumnSize = 0;
 
   for(auto itr : this->cols_) {
     if(itr.IsVariable()) {
-      variable_column_count++;
+      uVariableColumnCount++;
     }
     else {
-      fixed_column_size += itr.GetWidth();
+      uFixedColumnSize += itr.GetWidth();
     }
   }
-  if(variable_column_count > 0) {
-    Rect rcParent;
+  if(uVariableColumnCount > 0) {
+    Rect rcThis;
     INT nRemains = 0;
-    Widget* pParent = this->GetParent();
 
-    assert(pParent);
-    rcParent = pParent->GetRect();
-    nRemains = rcParent.GetWidth() - fixed_column_size;
+    rcThis = this->GetRect();
+    nRemains = rcThis.GetWidth() - uFixedColumnSize;
     if(nRemains > 0) {
-      variable_width = nRemains / variable_column_count;
+      uVariableWidth = nRemains / uVariableColumnCount;
     }
     else {
-      variable_width = 0;
+      uVariableWidth = 0;
     }
   }
   for(auto& itr : this->cols_) {
     if(itr.IsVariable()) {
-      itr.SetWidth(variable_width);
+      itr.SetWidth(uVariableWidth);
     }
   }
 

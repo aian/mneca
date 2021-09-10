@@ -7,13 +7,8 @@ namespace mneca {
 
 class Splitter : public Window {
 public:
-  enum class Direction {
-    VERTICAL   = 0,
-    HORIZONTAL = 1,
-  };
-public:
   Splitter() = delete;
-  Splitter(INT nID, Direction fDir, Window* pParentWnd);
+  Splitter(Window* pParentWnd);
   Splitter(const Splitter& other) = delete;
   Splitter(Splitter&& other) noexcept = delete;
   virtual ~Splitter();
@@ -33,8 +28,6 @@ private:
 private:
   INT m_nBorderWidth;
   INT m_nPos;
-  Direction m_fDir;
-  BOOL m_bHover;
   BOOL m_bGrab;
   std::array<Window*, 2> m_pPaneWnd;
 };

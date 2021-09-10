@@ -2,12 +2,10 @@
 
 namespace mneca {
 
-Splitter::Splitter(INT nID, Direction fDir, Window* pParentWnd)
-  : Window(nID, pParentWnd),
+Splitter::Splitter(Window* pParentWnd)
+  : Window(IDR_SPLITTER, pParentWnd),
     m_nBorderWidth(2),
-    m_nPos(100),
-    m_fDir(fDir),
-    m_bHover(FALSE),
+    m_nPos(300),
     m_bGrab(FALSE),
     m_pPaneWnd{ nullptr, nullptr }
 {
@@ -24,7 +22,7 @@ Splitter::Splitter(INT nID, Direction fDir, Window* pParentWnd)
       dwStyle,
       0, 0, 0, 0,
       pParentWnd->GetWindowHandle(),
-      reinterpret_cast<HMENU>(static_cast<UINT64>(nID)),
+      reinterpret_cast<HMENU>(IDR_SPLITTER),
       GetInstance(),
       nullptr
     );
@@ -36,11 +34,8 @@ Splitter::Splitter(INT nID, Direction fDir, Window* pParentWnd)
     this->SetClientRect();
   }
   {
-    this->m_pPaneWnd[0] = new Pane(this);
+    this->m_pPaneWnd[0] = new ListWindow(dynamic_cast<Window*>(this->GetParent()));
     this->m_pPaneWnd[1] = new Pane(this);
-  }
-  {
-    this->AddPane(new ListWindow(this->m_pPaneWnd[1]), 1);
   }
 }
 
@@ -91,148 +86,125 @@ Splitter::UpdateRect() {
 
 VOID
 Splitter::OnSize(INT nWidth, INT nHeight) {
-  Rect rcWnd;
-  Widget* pParent = nullptr;
+  Rect rcSeparatorWnd;
+  Widget* pParent = this->GetParent();
 
   this->UpdateRect();
 
-  pParent = this->GetParent();
-  if (pParent) {
-    std::array<Rect, 2> rcChild;
-    Rect rcRect = this->GetRect();
-    const Rect rcParent = static_cast<RECT>(pParent->GetRect());
+  if (!pParent) {
+    return;
+  }
 
-    if (m_fDir == Splitter::Direction::HORIZONTAL) {
-      rcWnd.SetPosX1(this->m_nPos);
-      rcWnd.SetPosY1(rcRect.GetPosY1());
-      rcWnd.SetPosX2(this->m_nPos + this->m_nBorderWidth);
-      rcWnd.SetPosY2(rcRect.GetPosY2());
+  std::array<Rect, 2> rcChild;
+  Rect rcThis = this->GetRect();
+  const Rect rcParent = static_cast<RECT>(pParent->GetRect());
 
-      rcChild[0].SetPosX1(rcParent.GetPosX1());
-      rcChild[0].SetPosY1(rcWnd.GetPosY1());
-      rcChild[0].SetPosX2(this->m_nPos - 1);
-      rcChild[0].SetPosY2(rcWnd.GetPosY2());
+  rcSeparatorWnd.SetPosX1(this->m_nPos);
+  rcSeparatorWnd.SetPosY1(rcThis.GetPosY1());
+  rcSeparatorWnd.SetPosX2(this->m_nPos + this->m_nBorderWidth);
+  rcSeparatorWnd.SetPosY2(rcThis.GetPosY2());
 
-      rcChild[1].SetPosX1(this->m_nPos + this->m_nBorderWidth + 1);
-      rcChild[1].SetPosY1(rcWnd.GetPosY1());
-      rcChild[1].SetPosX2(rcParent.GetPosX2());
-      rcChild[1].SetPosY2(rcWnd.GetPosY2());
-    } else {
-      assert(m_fDir == Splitter::Direction::VERTICAL);
-      rcWnd.SetPosX1(rcRect.GetPosY1());
-      rcWnd.SetPosY1(this->m_nPos);
-      rcWnd.SetPosX2(rcRect.GetPosY2());
-      rcWnd.SetPosY2(this->m_nPos + this->m_nBorderWidth);
+  rcChild[0].SetPosX1(rcParent.GetPosX1());
+  rcChild[0].SetPosY1(rcSeparatorWnd.GetPosY1());
+  rcChild[0].SetPosX2(this->m_nPos - 1);
+  rcChild[0].SetPosY2(rcSeparatorWnd.GetPosY2());
 
-      rcChild[0].SetPosX1(rcWnd.GetPosX1());
-      rcChild[0].SetPosY1(rcWnd.GetPosY1());
-      rcChild[0].SetPosX2(rcWnd.GetPosX2());
-      rcChild[0].SetPosY2(this->m_nPos - 1);
+  rcChild[1].SetPosX1(this->m_nPos + this->m_nBorderWidth + 1);
+  rcChild[1].SetPosY1(rcSeparatorWnd.GetPosY1());
+  rcChild[1].SetPosX2(rcParent.GetPosX2());
+  rcChild[1].SetPosY2(rcSeparatorWnd.GetPosY2());
 
-      rcChild[1].SetPosX1(rcWnd.GetPosX1());
-      rcChild[1].SetPosY1(this->m_nPos + this->m_nBorderWidth + 1);
-      rcChild[1].SetPosX2(rcWnd.GetPosX2());
-      rcChild[1].SetPosY2(rcWnd.GetPosY2());
-    }
-    {
-      const RECT rc = static_cast<RECT>(rcParent);
+  {
+    const RECT rc = static_cast<RECT>(rcParent);
 
-      ::MoveWindow(
-        this->GetWindowHandle(),
-        rcWnd.GetPosX1(), rcWnd.GetPosY1(), rcWnd.GetWidth(), rcWnd.GetHeight(),
-        FALSE);
-      ::InvalidateRect(this->GetWindowHandle(), &rc, TRUE);
-    }
+    ::MoveWindow(
+      this->GetWindowHandle(),
+      rcSeparatorWnd.GetPosX1(), rcSeparatorWnd.GetPosY1(),
+      rcSeparatorWnd.GetWidth(), rcSeparatorWnd.GetHeight(),
+      FALSE);
+    ::InvalidateRect(this->GetWindowHandle(), &rc, TRUE);
+  }
+  // Update child panes
+  for (SIZE_T i = 0; i < rcChild.size(); i++) {
+    const RECT rc = static_cast<RECT>(rcParent);
 
-    // Update child panes
-    for (SIZE_T i = 0; i < rcChild.size(); i++) {
-      const RECT rc = static_cast<RECT>(rcParent);
-
-      ::MoveWindow(
-        m_pPaneWnd[i]->GetWindowHandle(),
-        rcChild[i].GetPosX1(), rcChild[i].GetPosY1(),
-        rcChild[i].GetWidth(), rcChild[i].GetHeight(),
-        FALSE);
-      ::InvalidateRect(m_pPaneWnd[i]->GetWindowHandle(), &rc, TRUE);
-
-      m_pPaneWnd[i]->WndProc(WM_SIZE, 0, MAKELPARAM(rcChild[i].GetWidth(), rcChild[i].GetHeight()));
-    }
+    m_pPaneWnd[i]->SetRect(rcChild[i]);
+    m_pPaneWnd[i]->WndProc(
+      WM_SIZE, 0, MAKELPARAM(rcChild[i].GetHeight(), rcChild[i].GetWidth()));
   }
 }
 
 VOID
 Splitter::OnMouseMove(INT nPosX, INT nPosY, UINT fKeyFlags) {
+  Window* pParentWnd = dynamic_cast<Window*>(this->GetParent());
   POINT ptCursor = {};
-  HCURSOR hCursor = nullptr;
+  RECT rcClient ={};
+  RECT rcHitRegion ={};
 
   ::GetCursorPos(&ptCursor);
+  ::GetClientRect(this->GetWindowHandle(), &rcClient);
 
-  if (this->m_fDir == Direction::HORIZONTAL) {
-    hCursor = LoadCursor(nullptr, IDC_SIZEWE);
-  } else {
-    hCursor = LoadCursor(nullptr, IDC_SIZENS);
+  if(!pParentWnd) {
+    return;
   }
 
-  if (m_bGrab) {
-    RECT rcClient = {};
+  if (m_bGrab && (fKeyFlags & MK_LBUTTON)) {
     RECT rcParent = {};
     INT nWidth = 0;
     INT nHeight = 0;
-    Window* pParent = dynamic_cast<Window*>(this->GetParent());
 
     this->UpdateRect();
 
-    if (pParent) {
-      ::GetClientRect(this->GetWindowHandle(), &rcClient);
-      nWidth = this->m_nBorderWidth;
-      nHeight = rcClient.bottom - rcClient.top;
-      ::MoveWindow(
-        this->GetWindowHandle(),
-        nPosX, this->GetRect().GetPosY1(),
-        nWidth, nHeight, FALSE);
+    nWidth = this->m_nBorderWidth;
+    nHeight = rcClient.bottom - rcClient.top;
+    ::MoveWindow(
+      this->GetWindowHandle(),
+      nPosX, this->GetRect().GetPosY1(),
+      nWidth, nHeight, FALSE);
 
-      rcParent = static_cast<RECT>(pParent->GetRect());
-      ::InvalidateRect(pParent->GetWindowHandle(), &rcParent, TRUE);
-      ::InvalidateRect(this->GetWindowHandle(), &rcClient, TRUE);
-      ::SetCursor(hCursor);
+    rcParent = static_cast<RECT>(pParentWnd->GetRect());
+    ::InvalidateRect(pParentWnd->GetWindowHandle(), &rcParent, TRUE);
+    ::InvalidateRect(this->GetWindowHandle(), &rcClient, TRUE);
+    ::SetCursor(LoadCursor(nullptr, IDC_SIZEWE));
 
-      this->m_nPos = nPosX;
-      this->OnSize(nWidth, nHeight);
-    }
+    this->m_nPos = nPosX;
+    this->OnSize(nWidth, nHeight);
   } else {
     RECT rcWnd = {};
 
     ::GetWindowRect(this->GetWindowHandle(), &rcWnd);
     if (PtInRect(&rcWnd, ptCursor)) {
-      ::SetCursor(hCursor);
-      m_bHover = TRUE;
+      ::SetCursor(LoadCursor(nullptr, IDC_SIZEWE));
     } else {
       ::SetCursor(LoadCursor(nullptr, IDC_ARROW));
-      m_bHover = FALSE;
     }
   }
 }
 
 VOID
 Splitter::OnLeftButtonDown(INT nPosX, INT nPosY, UINT fKeyFlags) {
-  if (this->m_bHover) {
-    HCURSOR hCursor = nullptr;
+  Window* pParentWnd = dynamic_cast<Window*>(this->GetParent());
+  POINT ptCursor ={};
+  RECT rcWnd ={};
 
-    if (this->m_fDir == Direction::HORIZONTAL) {
-      hCursor = LoadCursor(nullptr, IDC_SIZEWE);
+  ::GetCursorPos(&ptCursor);
+  ::GetWindowRect(this->GetWindowHandle(), &rcWnd);
+
+  if(pParentWnd) {
+    if (PtInRect(&rcWnd, ptCursor)) {
+      this->m_bGrab = TRUE;
+      ::SetCursor(LoadCursor(nullptr, IDC_SIZEWE));
+      SetCapture(pParentWnd->GetWindowHandle());
     } else {
-      hCursor = LoadCursor(nullptr, IDC_SIZENS);
+      ReleaseCapture();
     }
-    ::SetCursor(hCursor);
-
-    this->m_bGrab = TRUE;
   }
 }
 
 VOID
 Splitter::OnLeftButtonUp(INT nPosX, INT nPosY, UINT fKeyFlags) {
   this->m_bGrab = FALSE;
-  this->OnMouseMove(nPosX, nPosY, fKeyFlags);
+  ReleaseCapture();
 }
 
 LRESULT

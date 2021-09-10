@@ -19,9 +19,8 @@ public:
   VOID AddChild(Widget* pChild);
   Widget* GetParent() noexcept;
   Widget* GetChild(INT nID);
-protected:
-  VOID SetRect(const Rect& rect);
 public:
+  virtual VOID SetRect(const Rect& rect);
   virtual Rect GetRect() const noexcept;
   virtual INT GetPosX1() const noexcept;
   virtual INT GetPosY1() const noexcept;
