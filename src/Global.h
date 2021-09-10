@@ -7,7 +7,7 @@
 
 namespace mneca {
 
-extern VOID GlobalInitialize(HINSTANCE hInstance) noexcept;
+extern VOID GlobalInitialize(HINSTANCE hInstance);
 
 extern HINSTANCE GetInstance() noexcept;
 

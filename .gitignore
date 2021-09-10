@@ -37,6 +37,21 @@
 # Visual Studio intermediate files
 .vs
 *.user
+*.ncb
+*.pdb
+*.rpt
+*.plg
+*.opt
+*.ilk
+*.tlh
+*.tli
+*.suo
+*.aps
+*.dep
+*.idb
+*.user
+*.tmp
+*.sdf
 
 # Project intermediate files
 .build
