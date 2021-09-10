@@ -5,9 +5,27 @@ namespace mneca {
 static HINSTANCE g_hInstance = nullptr;
 
 VOID
-GlobalInitialize(HINSTANCE hInstance) noexcept {
-  g_hInstance = hInstance;
-  Param::Init();
+GlobalInitialize(HINSTANCE hInstance) {
+  // Initialize application parameters
+  {
+    g_hInstance = hInstance;
+  }
+  // Initialize application parameters
+  {
+    Param::Init();
+  }
+  // Initialize COM component
+  {
+    HRESULT hr = S_OK;
+    hr = CoInitialize(nullptr);
+    if (FAILED(hr)) {
+      throw std::runtime_error("Failed to initialize a COM framework");
+    }
+  }
+  // Initialize common contorols
+  {
+    InitCommonControls();
+  }
 };
 
 HINSTANCE

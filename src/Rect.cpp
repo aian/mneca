@@ -53,6 +53,34 @@ Rect::operator RECT() const noexcept {
   };
 }
 
+VOID
+Rect::Set(INT nPosX1, INT nPosY1, INT nPosX2, INT nPosY2) noexcept {
+  this->SetPosX1(nPosX1);
+  this->SetPosY1(nPosY1);
+  this->SetPosX2(nPosX2);
+  this->SetPosY2(nPosY2);
+}
+
+VOID
+Rect::SetPosX1(INT nPos) noexcept {
+  this->m_nPosX1 = nPos;
+}
+
+VOID
+Rect::SetPosY1(INT nPos) noexcept {
+  this->m_nPosY1 = nPos;
+}
+
+VOID
+Rect::SetPosX2(INT nPos) noexcept {
+  this->m_nPosX2 = nPos;
+}
+
+VOID
+Rect::SetPosY2(INT nPos) noexcept {
+  this->m_nPosY2 = nPos;
+}
+
 INT
 Rect::GetWidth() const noexcept {
   return this->m_nPosX2 - this->m_nPosX1;

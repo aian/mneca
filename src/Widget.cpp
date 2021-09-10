@@ -102,11 +102,6 @@ Widget::Dispatch(UINT nMsg, WPARAM wParam, LPARAM lParam) {
   return res;
 }
 
-LRESULT
-Widget::WndProc(UINT msg, WPARAM wp, LPARAM lp) {
-  return static_cast<LRESULT>(0);
-}
-
 LRESULT CALLBACK
 Widget::WndProc(HWND hWnd, UINT nMsg, WPARAM wParam, LPARAM lParam) {
   static Window* pWnd = nullptr;

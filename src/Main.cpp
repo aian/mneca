@@ -9,15 +9,9 @@ ErrorMessage(const std::string& strMessage) {
 INT
 Process(HINSTANCE hInstance, INT nCmdShow) {
   INT ret = EXIT_SUCCESS;
-  HRESULT hr = S_OK;
 
   mneca::GlobalInitialize(hInstance);
 
-  hr = CoInitialize(nullptr);
-  if(FAILED(hr)) {
-    throw std::runtime_error("Failed to initialize a COM framework");
-  }
-  InitCommonControls();
   try {
     mneca::AppWindow app;
 

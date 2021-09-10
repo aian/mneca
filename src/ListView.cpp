@@ -255,30 +255,6 @@ ListWindow::ListWindow(Window* pParentWnd) : Window(IDR_LISTVIEW, pParentWnd) {
 
 ListWindow::~ListWindow() { }
 
-VOID
-ListWindow::UpdateOffset() {
-  Widget* pParentWnd = this->GetParent();
-  Widget* pRibbonWnd = nullptr;
-  Widget* pStatusBarWnd = nullptr;
-  RECT rcOffset = { 0 };
-
-  pRibbonWnd = pParentWnd->GetChild(IDR_RIBBON);
-  if (!pRibbonWnd) {
-    throw std::runtime_error("Failed to get the Ribbon window");
-  }
-  pStatusBarWnd = pParentWnd->GetChild(IDR_STATUS_BAR);
-  if(!pStatusBarWnd) {
-    throw std::runtime_error("Failed to get the StatusBar window");
-  }
-
-  rcOffset.top    = pRibbonWnd->GetHeight();
-  rcOffset.right  = 0;
-  rcOffset.bottom = pStatusBarWnd->GetHeight();
-  rcOffset.left   = 0;
-
-  this->SetOffset(rcOffset);
-}
-
 BOOL
 ListWindow::AddItem(const ListItem& item) {
   LVITEM lvItem = { 0 };
@@ -320,27 +296,19 @@ ListWindow::OnEndTrack(NMHEADER* header) {
 
 VOID
 ListWindow::OnSize(UINT nWidth, UINT nHeight) {
-  RECT rcOffset = { 0 };
-  RECT rcWnd = { 0 };
-  UINT cx, cy, cw, ch;
+  Rect rcThis = this->GetRect();
+  RECT rc = static_cast<RECT>(rcThis);
 
-  this->SetClientRect();
-  this->UpdateOffset();
-
-  rcOffset = this->GetOffset();
-
-  cx = rcOffset.left;
-  cy = rcOffset.top;
-  cw = nWidth - (rcOffset.left + rcOffset.right);
-  ch = nHeight - (rcOffset.top + rcOffset.bottom);
-
-  ::MoveWindow(this->GetWindowHandle(), cx, cy, cw, ch, FALSE);
+  ::MoveWindow(
+    this->GetWindowHandle(),
+    rcThis.GetPosX1(), rcThis.GetPosY1(),
+    rcThis.GetWidth(), rcThis.GetHeight(),
+    FALSE);
 
   this->AdjustColumn();
   this->UpdateColumn();
 
-  ::GetClientRect(this->GetWindowHandle(), &rcWnd);
-  ::InvalidateRect(this->GetWindowHandle(), &rcWnd, TRUE);
+  ::InvalidateRect(this->GetWindowHandle(), &rc, TRUE);
 }
 
 BOOL
@@ -367,36 +335,34 @@ ListWindow::InsertColumn() {
 
 BOOL
 ListWindow::AdjustColumn() {
-  UINT variable_width = 0;
-  UINT variable_column_count = 0;
-  UINT fixed_column_size = 0;
+  UINT uVariableWidth = 0;
+  UINT uVariableColumnCount = 0;
+  UINT uFixedColumnSize = 0;
 
   for(auto itr : this->cols_) {
     if(itr.IsVariable()) {
-      variable_column_count++;
+      uVariableColumnCount++;
     }
     else {
-      fixed_column_size += itr.GetWidth();
+      uFixedColumnSize += itr.GetWidth();
     }
   }
-  if(variable_column_count > 0) {
-    Rect rcParent;
+  if(uVariableColumnCount > 0) {
+    Rect rcThis;
     INT nRemains = 0;
-    Widget* pParent = this->GetParent();
 
-    assert(pParent);
-    rcParent = pParent->GetRect();
-    nRemains = rcParent.GetWidth() - fixed_column_size;
+    rcThis = this->GetRect();
+    nRemains = rcThis.GetWidth() - uFixedColumnSize;
     if(nRemains > 0) {
-      variable_width = nRemains / variable_column_count;
+      uVariableWidth = nRemains / uVariableColumnCount;
     }
     else {
-      variable_width = 0;
+      uVariableWidth = 0;
     }
   }
   for(auto& itr : this->cols_) {
     if(itr.IsVariable()) {
-      itr.SetWidth(variable_width);
+      itr.SetWidth(uVariableWidth);
     }
   }
 

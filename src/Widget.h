@@ -19,9 +19,8 @@ public:
   VOID AddChild(Widget* pChild);
   Widget* GetParent() noexcept;
   Widget* GetChild(INT nID);
-protected:
-  VOID SetRect(const Rect& rect);
 public:
+  virtual VOID SetRect(const Rect& rect);
   virtual Rect GetRect() const noexcept;
   virtual INT GetPosX1() const noexcept;
   virtual INT GetPosY1() const noexcept;
@@ -32,11 +31,13 @@ public:
 protected:
   virtual INT GetID() const noexcept;
   LRESULT Dispatch(UINT nMsg, WPARAM wParam, LPARAM lParam);
+public:
   virtual LRESULT WndProc(UINT nMsg, WPARAM wParam, LPARAM lParam) = 0;
 public:
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT nMeg, WPARAM wParam, LPARAM lParam);
-private:
+protected:
   std::vector<Widget*> m_children;
+private:
   Widget* m_pParent;
   Rect m_rcPos;
   INT m_nID;
