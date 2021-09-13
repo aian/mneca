@@ -386,7 +386,7 @@ Ribbon::GetHeight() const noexcept {
 
 LRESULT
 Ribbon::WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  return ::DefWindowProc(this->GetWindowHandle(), uMsg, wParam, lParam);
+  return static_cast<LRESULT>(0);
 }
 
 }  // namespace mneca

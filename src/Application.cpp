@@ -80,31 +80,8 @@ AppWindow::Impl::Impl(Window* parent) : Window(IDR_APPWINDOW, parent) {
   {
     this->AddChild(new StatusBar(this));
     this->AddChild(new Ribbon(this));
-    this->AddChild(new ListWindow(this));
-  }
-  {
-    ListWindow* pListWnd;
-    ListItem lstItem;
-
-    pListWnd = dynamic_cast<ListWindow*>(this->GetChild(IDR_LISTVIEW));
-    assert(pListWnd);
-
-    lstItem.SetID(100);
-    lstItem.SetLemma(L"pronounce");
-    lstItem.SetPOS(POSType::POS_TYPE_VERB);
-    lstItem.SetDef(L"Pronouciation");
-    lstItem.SetRate(3.2232);
-
-    pListWnd->AddItem(lstItem);
-
-
-    lstItem.SetID(101);
-    lstItem.SetLemma(L"pronounce");
-    lstItem.SetPOS(POSType::POS_TYPE_VERB);
-    lstItem.SetDef(L"Pronouciation");
-    lstItem.SetRate(3.2232);
-
-    pListWnd->AddItem(lstItem);
+//  this->AddChild(new ListWindow(this));
+    this->AddChild(new Splitter(this));
   }
   {
     ::ShowWindow(this->GetWindowHandle(), param->GetWindowState());
