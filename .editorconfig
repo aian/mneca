@@ -1,6 +1,7 @@
-##
-## EditorConfig is awesome: https://EditorConfig.org
-##
+## 
+## This file is part of mneca project. For license details, see the file
+## 'LICENSE' in this package.
+## 
 
 root = true
 
