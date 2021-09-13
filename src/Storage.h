@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <memory>
-
 namespace mneca {
 
 class Storage final {
@@ -17,11 +15,14 @@ public:
   Storage& operator=(const Storage& rhs) = delete;
   Storage& operator=(Storage&& rhs) = delete;
 public:
-  VOID Create(const std::wstring& path);
-  VOID Open(const std::wstring& path);
+  VOID Create(const std::wstring& strPath);
+  VOID Open(const std::wstring& strPath);
+  VOID Close();
+public:
+  BOOL IsOpen() const noexcept;
 private:
-  class Impl;
-  std::unique_ptr<Impl> ph_;
+  sqlite3* m_pDB;
+  std::wstring m_strPath;
 };
 
 }

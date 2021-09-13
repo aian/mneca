@@ -7,36 +7,11 @@
 
 namespace mneca {
 
-class Storage::Impl final {
-public:
-  Impl();
-  Impl(const Impl& other) = delete;
-  Impl(const Impl&& other) = delete;
-  ~Impl();
-public:
-  Impl& operator=(const Impl& rhs) = delete;
-  Impl& operator=(const Impl&& rhs) = delete;
-public:
-  void create(const std::string& path);
-  void open(const std::string& path);
-  void close();
-  bool is_open() const;
-private:
-  sqlite3* dbh_;
-};
-
-Storage::Impl::Impl() : dbh_(nullptr) {}
-
-Storage::Impl::~Impl() {
-  if (this->is_open()) {
-    this->close();
-  }
-}
-
 static void
-create_tables_(sqlite3* dbh) {
-  int rc = 0;
-  constexpr char sql[] =
+CreateTables(sqlite3* pDB) {
+  int nRC = 0;
+
+  constexpr char lpSQL[] =
     "DROP TABLE IF EXISTS card; "
     "CREATE TABLE card ( "
     "  id INTEGER PRIMARY KEY AUTO_INCREMENT, "
@@ -44,63 +19,58 @@ create_tables_(sqlite3* dbh) {
     "  pron TEXT, "
     "  pos INTEGER "
     "); "
-    
     ;
 
-  rc = sqlite3_exec(dbh, sql, nullptr, nullptr, nullptr);
-  SQLITE3_ERROR(rc, "Failed to create tables");
+  nRC = sqlite3_exec(pDB, lpSQL, nullptr, nullptr, nullptr);
+  SQLITE3_ERROR(nRC, "Failed to create tables");
 }
 
-void
-Storage::Impl::create(const std::string& path) {
-  int rc = 0;
-  sqlite3* dbh = nullptr;
-  constexpr int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+Storage::Storage() : m_pDB(nullptr) { }
 
-  if(PathFileExistsA(path.c_str())) {
+Storage::~Storage() {
+  this->Close();
+}
+
+VOID
+Storage::Create(const std::wstring& strPath) {
+  INT nRC = 0;
+  sqlite3* pDB = nullptr;
+
+  if (PathFileExists(strPath.c_str())) {
     throw std::runtime_error("Database file does not exist");
   }
-  rc = sqlite3_open_v2(path.c_str(), &dbh, flags, nullptr);
-  SQLITE3_ERROR(rc, "Failed to open database");
-  this->dbh_ = dbh;
+  nRC = sqlite3_open16(strPath.c_str(), &pDB);
+  SQLITE3_ERROR(nRC, "Failed to open database");
+  this->m_pDB = pDB;
 
-  create_tables_(this->dbh_);
-
+  CreateTables(this->m_pDB);
 }
 
-void
-Storage::Impl::open(const std::string& path) {
-  int rc = 0;
-  sqlite3* dbh = nullptr;
-  constexpr int flags = SQLITE_OPEN_READWRITE;
+VOID
+Storage::Open(const std::wstring& strPath) {
+  INT nRC = 0;
+  sqlite3* pDB = nullptr;
 
-  if (!PathFileExistsA(path.c_str())) {
+  if (!PathFileExists(strPath.c_str())) {
     throw std::runtime_error("Database file does not exist");
   }
-  rc = sqlite3_open_v2(path.c_str(), &dbh, flags, nullptr);
-  SQLITE3_ERROR(rc, "Failed to open database");
-  this->dbh_ = dbh;
+  nRC = sqlite3_open16(strPath.c_str(), &pDB);
+  SQLITE3_ERROR(nRC, "Failed to open database");
+  this->m_pDB = pDB;
 }
 
-void
-Storage::Impl::close() {
-  if (this->is_open()) {
-    int rc = sqlite3_close_v2(dbh_);
+VOID
+Storage::Close() {
+  if (this->IsOpen()) {
+    INT rc = sqlite3_close_v2(m_pDB);
     SQLITE3_ERROR(rc, "Failed to close database");
+    m_pDB = nullptr;
   }
 }
 
-bool
-Storage::Impl::is_open() const {
-  return this->dbh_ ? true : false;
+constexpr BOOL
+Storage::IsOpen() const noexcept {
+  return this->m_pDB ? TRUE : FALSE;
 }
-
-/* ------------------------------------------------------------------------- */
-
-Storage::Storage() : ph_(new Storage::Impl()) { }
-
-Storage::~Storage() { }
-
-
 
 }
