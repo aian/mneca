@@ -1,3 +1,7 @@
+/*-
+ * This file is part of mneca project. For license details, see the file
+ * 'LICENSE' in this package.
+ */
 #ifndef MNECA_PARAM_H
 #define MNECA_PARAM_H
 

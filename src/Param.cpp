@@ -1,3 +1,7 @@
+/*-
+ * This file is part of mneca project. For license details, see the file
+ * 'LICENSE' in this package.
+ */
 #include "Local.h"
 
 #define PARAM_MAXPATH 2048
