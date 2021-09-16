@@ -23,7 +23,7 @@ public:
   VOID Open(const std::wstring& strPath);
   VOID Close();
 public:
-  BOOL IsOpen() const noexcept;
+  constexpr BOOL IsOpen() const noexcept;
 private:
   sqlite3* m_pDB;
   std::wstring m_strPath;
